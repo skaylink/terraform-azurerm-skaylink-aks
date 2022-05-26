@@ -16,7 +16,6 @@
 
 # For questions and contributions please contact info@iq3cloud.com
 
-
 terraform {
   required_providers {
     helm = {
@@ -53,12 +52,15 @@ resource "azurerm_kubernetes_cluster" "kubernetes" {
     ]
   }
 
-  name                 = var.name
-  location             = data.azurerm_resource_group.resourcegroup.location
-  resource_group_name  = data.azurerm_resource_group.resourcegroup.name
-  dns_prefix           = var.name
-  kubernetes_version   = var.aks_configuration.kubernetes_version
-  azure_policy_enabled = var.aks_addons.enable_azure_policy
+  name                              = var.name
+  location                          = data.azurerm_resource_group.resourcegroup.location
+  resource_group_name               = data.azurerm_resource_group.resourcegroup.name
+  dns_prefix                        = var.name
+  kubernetes_version                = var.aks_configuration.kubernetes_version
+  azure_policy_enabled              = var.aks_addons.enable_azure_policy
+  public_network_access_enabled     = var.public_network_access_enabled
+  api_server_authorized_ip_ranges   = var.public_network_access_enabled == true ? ["0.0.0.0/32"] : var.authorized_ip_ranges
+  role_based_access_control_enabled = true
 
   linux_profile {
     admin_username = var.aks_node_authentication.node_admin_username

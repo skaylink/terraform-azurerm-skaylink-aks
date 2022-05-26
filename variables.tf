@@ -27,6 +27,17 @@ variable "name" {
   description = "name of the AKS cluster"
 }
 
+variable "authorized_ip_ranges" {
+  type        = list(string)
+  description = "authorized IP ranges for the AKS cluster"
+}
+
+variable "public_network_access_enabled" {
+  type        = bool
+  default     = true
+  description = "enable public network access for the AKS cluster"
+}
+
 variable "use_managed_identity" {
   type        = bool
   description = "Toggles wether the AKS is built using a managed identity (true) or a Service Principal to authenticate within Azure Cloud (false)"
