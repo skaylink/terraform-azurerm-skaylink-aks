@@ -42,6 +42,7 @@ variable "public_network_access_enabled" {
 variable "use_managed_identity" {
   type        = bool
   description = "Toggles wether the AKS is built using a managed identity (true) or a Service Principal to authenticate within Azure Cloud (false); Managed Identity is the recommended approach."
+  default     = true
 }
 
 variable "aks_subnet_id" {
