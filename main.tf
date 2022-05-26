@@ -121,6 +121,7 @@ resource "azurerm_public_ip" "nginx_ingress" {
   resource_group_name = azurerm_kubernetes_cluster.kubernetes.node_resource_group
   allocation_method   = "Static"
   domain_name_label   = var.ip_domain_name_label
+  sku                 = "Standard"
 }
 
 resource "helm_release" "nginx_ingress_controller" {
