@@ -59,7 +59,7 @@ resource "azurerm_kubernetes_cluster" "kubernetes" {
   kubernetes_version                = var.aks_configuration.kubernetes_version
   azure_policy_enabled              = var.aks_addons.enable_azure_policy
   public_network_access_enabled     = var.public_network_access_enabled
-  api_server_authorized_ip_ranges   = var.public_network_access_enabled == true ? ["0.0.0.0/32"] : var.authorized_ip_ranges
+  api_server_authorized_ip_ranges   = var.public_network_access_enabled == true ? null : var.authorized_ip_ranges
   role_based_access_control_enabled = true
 
   linux_profile {
@@ -111,6 +111,14 @@ resource "azurerm_kubernetes_cluster" "kubernetes" {
       log_analytics_workspace_id = var.aks_addons.aks_log_analytics_workspace_id
     }
   }
+}
+
+resource "azurerm_role_assignment" "aks_network_role" {
+  count = var.ingress_controller == true ? 1 : 0
+
+  scope                = var.aks_vnet_id
+  role_definition_name = "Network Contributor"
+  principal_id         = azurerm_kubernetes_cluster.kubernetes.identity[0].principal_id
 }
 
 # Create Static Public IP Address to be used by Nginx Ingress

@@ -19,40 +19,50 @@
 
 variable "resourcegroup" {
   type        = string
-  description = "The resource group where the aks will be located in"
+  description = "The resource group where the cluster will be created"
 }
 
 variable "name" {
   type        = string
-  description = "name of the AKS cluster"
+  description = "Name of the AKS cluster"
 }
 
 variable "authorized_ip_ranges" {
   type        = list(string)
-  description = "authorized IP ranges for the AKS cluster"
+  description = "Authorized IP ranges for the AKS cluster if AKS cluster is not publicly accessible."
+  default     = null
 }
 
 variable "public_network_access_enabled" {
   type        = bool
   default     = true
-  description = "enable public network access for the AKS cluster"
+  description = "Enable or disable public network access for the AKS cluster"
 }
 
 variable "use_managed_identity" {
   type        = bool
-  description = "Toggles wether the AKS is built using a managed identity (true) or a Service Principal to authenticate within Azure Cloud (false)"
+  description = "Toggles wether the AKS is built using a managed identity (true) or a Service Principal to authenticate within Azure Cloud (false); Managed Identity is the recommended approach."
 }
 
 variable "aks_subnet_id" {
-  type = string
+  type        = string
+  description = "The subnet ID to use for the AKS cluster"
+}
+
+variable "aks_vnet_id" {
+  type        = string
+  default     = null
+  description = "Scope to provide Network Contributor access to the AKS cluster when deploying Ingress NGINX"
 }
 
 variable "environment_name" {
-  type = string
+  type        = string
+  description = "The name of the environment to deploy the AKS cluster in, commonly used names are dev, qa and prod."
 }
 
 variable "key_vault_id" {
-  type = string
+  type        = string
+  description = "The ID of the key vault where you want to store the AKS cluster secrets"
 }
 
 variable "aks_configuration" {
@@ -115,15 +125,11 @@ variable "ingress_controller" {
 variable "argo_cd" {
   type        = bool
   default     = false
-  description = "set this value to true if you want to use Argo CD"
+  description = "Set this value to true if you want to use Argo CD"
 }
 
 variable "ip_domain_name_label" {
-  type    = string
-  default = null
-}
-
-variable "aks_public_ip_labels" {
-  type    = list(string)
-  default = null
+  type        = string
+  default     = null
+  description = "The domain name label for the AKS cluster's public IP address"
 }
