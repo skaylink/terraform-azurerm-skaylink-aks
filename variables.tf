@@ -69,29 +69,63 @@ variable "key_vault_id" {
 variable "aks_configuration" {
   description = "Defines AKS performance and size parameters"
   type = object({
+    vm_size                           = string
+    os_disk_size_gb                   = number
+    kubernetes_node_count             = number
+    kubernetes_min_node_count         = number
+    kubernetes_max_node_count         = number
+    kubernetes_enable_auto_scaling    = bool
+    network_plugin                    = string
+    max_pods                          = number
+    network_policy                    = string
+    kubernetes_version                = string
+    kubernetes_default_node_pool_name = string
+    load_balancer_sku                 = string
+  })
+  default = {
+    kubernetes_enable_auto_scaling    = false
+    kubernetes_max_node_count         = null
+    kubernetes_min_node_count         = null
+    kubernetes_node_count             = 2
+    kubernetes_version                = "1.23.8"
+    max_pods                          = 50
+    network_plugin                    = "azure"
+    network_policy                    = "azure"
+    os_disk_size_gb                   = 128
+    vm_size                           = "Standard_D2s_v5"
+    kubernetes_default_node_pool_name = "agentpool"
+    load_balancer_sku                 = "basic"
+  }
+}
+
+variable "aks_second_nodepool_configuration" {
+  description = "Defines AKS user nodepool performance and size parameters"
+  type = object({
     vm_size                        = string
     os_disk_size_gb                = number
     kubernetes_node_count          = number
     kubernetes_min_node_count      = number
     kubernetes_max_node_count      = number
     kubernetes_enable_auto_scaling = bool
-    network_plugin                 = string
     max_pods                       = number
-    network_policy                 = string
-    kubernetes_version             = string
+    node_pool_name                 = string
   })
   default = {
-    kubernetes_enable_auto_scaling = false
-    kubernetes_max_node_count      = null
-    kubernetes_min_node_count      = null
-    kubernetes_node_count          = 2
-    kubernetes_version             = "1.23.5"
+    vm_size                        = "Standard_B2s"
+    os_disk_size_gb                = 32
+    kubernetes_node_count          = 1
+    kubernetes_min_node_count      = 1
+    kubernetes_max_node_count      = 1
+    kubernetes_enable_auto_scaling = true
     max_pods                       = 30
-    network_plugin                 = "azure"
-    network_policy                 = "azure"
-    os_disk_size_gb                = 128
-    vm_size                        = "Standard_D2s_v5"
+    node_pool_name                 = "workerpool"
   }
+}
+
+variable "aks_second_nodepool" {
+  type        = bool
+  description = "Toggles wether the AKS is using an additional nodepool. Make sure that load_balancer_sku has to be set to 'standard'"
+  default     = false
 }
 
 variable "aks_node_authentication" {

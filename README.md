@@ -8,16 +8,18 @@ When deploying Ingress NGINX, you will need to supply a virtual network Id to ad
 
 ```hcl
   aks_configuration = {
-    vm_size                        = "standard_b2ms"
-    os_disk_size_gb                = 128
-    kubernetes_node_count          = 2
-    kubernetes_min_node_count      = 1
-    kubernetes_max_node_count      = 3
-    kubernetes_enable_auto_scaling = true
-    network_plugin                 = "azure"
-    network_policy                 = "azure"
-    max_pods                       = 30
-    kubernetes_version             = "1.23.5"
+    vm_size                           = "standard_b2ms"
+    os_disk_size_gb                   = 128
+    kubernetes_node_count             = 2
+    kubernetes_min_node_count         = 1
+    kubernetes_max_node_count         = 3
+    kubernetes_enable_auto_scaling    = true
+    network_plugin                    = "azure"
+    network_policy                    = "azure"
+    max_pods                          = 30
+    kubernetes_version                = "1.23.8"
+    kubernetes_default_node_pool_name = "agentpool"
+    load_balancer_sku                 = "basic"
   }
 ```
 <!-- BEGIN_TF_DOCS -->
@@ -45,6 +47,7 @@ No modules.
 | Name | Type |
 |------|------|
 | [azurerm_kubernetes_cluster.kubernetes](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster) | resource |
+| [azurerm_kubernetes_cluster_node_pool.worker_node_pool](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster_node_pool) | resource |
 | [azurerm_public_ip.nginx_ingress](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
 | [azurerm_role_assignment.aks_network_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [helm_release.argo_cd](https://registry.terraform.io/providers/hashicorp/helm/2.5.1/docs/resources/release) | resource |
@@ -59,8 +62,10 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_aks_addons"></a> [aks\_addons](#input\_aks\_addons) | Defines which addons will be activated. | <pre>object({<br>    aks_log_analytics_workspace_id   = string<br>    aks_log_analytics_workspace_name = string<br>    enable_kubernetes_dashboard      = bool<br>    enable_azure_policy              = bool<br>  })</pre> | <pre>{<br>  "aks_log_analytics_workspace_id": "",<br>  "aks_log_analytics_workspace_name": "",<br>  "enable_azure_policy": false,<br>  "enable_kubernetes_dashboard": false<br>}</pre> | no |
-| <a name="input_aks_configuration"></a> [aks\_configuration](#input\_aks\_configuration) | Defines AKS performance and size parameters | <pre>object({<br>    vm_size                        = string<br>    os_disk_size_gb                = number<br>    kubernetes_node_count          = number<br>    kubernetes_min_node_count      = number<br>    kubernetes_max_node_count      = number<br>    kubernetes_enable_auto_scaling = bool<br>    network_plugin                 = string<br>    max_pods                       = number<br>    network_policy                 = string<br>    kubernetes_version             = string<br>  })</pre> | <pre>{<br>  "kubernetes_enable_auto_scaling": false,<br>  "kubernetes_max_node_count": null,<br>  "kubernetes_min_node_count": null,<br>  "kubernetes_node_count": 2,<br>  "kubernetes_version": "1.23.5",<br>  "max_pods": 30,<br>  "network_plugin": "azure",<br>  "network_policy": "azure",<br>  "os_disk_size_gb": 128,<br>  "vm_size": "Standard_D2s_v5"<br>}</pre> | no |
+| <a name="input_aks_configuration"></a> [aks\_configuration](#input\_aks\_configuration) | Defines AKS performance and size parameters | <pre>object({<br>    vm_size                           = string<br>    os_disk_size_gb                   = number<br>    kubernetes_node_count             = number<br>    kubernetes_min_node_count         = number<br>    kubernetes_max_node_count         = number<br>    kubernetes_enable_auto_scaling    = bool<br>    network_plugin                    = string<br>    max_pods                          = number<br>    network_policy                    = string<br>    kubernetes_version                = string<br>    kubernetes_default_node_pool_name = string<br>    load_balancer_sku                 = string<br>  })</pre> | <pre>{<br>  "kubernetes_default_node_pool_name": "agentpool",<br>  "kubernetes_enable_auto_scaling": false,<br>  "kubernetes_max_node_count": null,<br>  "kubernetes_min_node_count": null,<br>  "kubernetes_node_count": 2,<br>  "kubernetes_version": "1.23.8",<br>  "load_balancer_sku": "basic",<br>  "max_pods": 50,<br>  "network_plugin": "azure",<br>  "network_policy": "azure",<br>  "os_disk_size_gb": 128,<br>  "vm_size": "Standard_D2s_v5"<br>}</pre> | no |
 | <a name="input_aks_node_authentication"></a> [aks\_node\_authentication](#input\_aks\_node\_authentication) | SSH Information to access node pool vms | <pre>object({<br>    node_admin_username   = string<br>    node_admin_ssh_public = string<br>  })</pre> | n/a | yes |
+| <a name="input_aks_second_nodepool"></a> [aks\_second\_nodepool](#input\_aks\_second\_nodepool) | Toggles wether the AKS is using an additional nodepool. Make sure that load\_balancer\_sku has to be set to 'standard' | `bool` | `false` | no |
+| <a name="input_aks_second_nodepool_configuration"></a> [aks\_second\_nodepool\_configuration](#input\_aks\_second\_nodepool\_configuration) | Defines AKS user nodepool performance and size parameters | <pre>object({<br>    vm_size                        = string<br>    os_disk_size_gb                = number<br>    kubernetes_node_count          = number<br>    kubernetes_min_node_count      = number<br>    kubernetes_max_node_count      = number<br>    kubernetes_enable_auto_scaling = bool<br>    max_pods                       = number<br>    node_pool_name                 = string<br>  })</pre> | <pre>{<br>  "kubernetes_enable_auto_scaling": true,<br>  "kubernetes_max_node_count": 1,<br>  "kubernetes_min_node_count": 1,<br>  "kubernetes_node_count": 1,<br>  "max_pods": 30,<br>  "node_pool_name": "workerpool",<br>  "os_disk_size_gb": 32,<br>  "vm_size": "Standard_B2s"<br>}</pre> | no |
 | <a name="input_aks_subnet_id"></a> [aks\_subnet\_id](#input\_aks\_subnet\_id) | The subnet ID to use for the AKS cluster | `string` | n/a | yes |
 | <a name="input_aks_vnet_id"></a> [aks\_vnet\_id](#input\_aks\_vnet\_id) | Scope to provide Network Contributor access to the AKS cluster when deploying Ingress NGINX | `string` | `null` | no |
 | <a name="input_argo_cd"></a> [argo\_cd](#input\_argo\_cd) | Set this value to true if you want to use Argo CD | `bool` | `false` | no |
