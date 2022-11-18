@@ -72,7 +72,7 @@ resource "azurerm_kubernetes_cluster" "kubernetes" {
   }
 
   default_node_pool {
-    name                 = "agentpool"
+    name                 = var.aks_configuration.kubernetes_default_node_pool_name
     type                 = "VirtualMachineScaleSets"
     node_count           = var.aks_configuration.kubernetes_node_count
     enable_auto_scaling  = var.aks_configuration.kubernetes_enable_auto_scaling
@@ -88,7 +88,7 @@ resource "azurerm_kubernetes_cluster" "kubernetes" {
   network_profile {
     network_plugin    = var.aks_configuration.network_plugin
     network_policy    = var.aks_configuration.network_policy
-    load_balancer_sku = "standard"
+    load_balancer_sku = var.aks_configuration.load_balancer_sku
   }
 
   dynamic "service_principal" {
@@ -111,6 +111,22 @@ resource "azurerm_kubernetes_cluster" "kubernetes" {
       log_analytics_workspace_id = var.aks_addons.aks_log_analytics_workspace_id
     }
   }
+}
+
+resource "azurerm_kubernetes_cluster_node_pool" "worker_node_pool" {
+  count = var.aks_second_nodepool == true ? 1 : 0
+
+  name                  = var.aks_second_nodepool_configuration.node_pool_name
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.kubernetes.id
+  vm_size               = var.aks_second_nodepool_configuration.vm_size
+  os_disk_size_gb       = var.aks_second_nodepool_configuration.os_disk_size_gb
+  node_count            = var.aks_second_nodepool_configuration.kubernetes_node_count
+  enable_auto_scaling   = var.aks_second_nodepool_configuration.kubernetes_enable_auto_scaling
+  min_count             = var.aks_second_nodepool_configuration.kubernetes_min_node_count
+  max_count             = var.aks_second_nodepool_configuration.kubernetes_max_node_count
+  vnet_subnet_id        = var.aks_subnet_id
+  max_pods              = var.aks_second_nodepool_configuration.max_pods
+  orchestrator_version  = var.aks_configuration.kubernetes_version
 }
 
 resource "azurerm_role_assignment" "aks_network_role" {
