@@ -45,6 +45,7 @@ provider "helm" {
   }
 }
 
+#tfsec:ignore:azure-container-logging
 resource "azurerm_kubernetes_cluster" "kubernetes" {
   lifecycle {
     ignore_changes = [
