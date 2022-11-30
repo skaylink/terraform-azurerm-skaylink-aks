@@ -172,7 +172,7 @@ resource "helm_release" "nginx_ingress_controller" {
   }
 
   dynamic "set" {
-    for_each = local.controller_service_nodePorts
+    for_each = local.metrics_enabled
     content {
       name  = set.value.name
       value = set.value.value
