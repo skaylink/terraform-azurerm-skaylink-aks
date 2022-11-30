@@ -157,6 +157,12 @@ variable "ingress_controller" {
   description = "Set this value to true if you want to use an ingress controller"
 }
 
+variable "metrics_enabled" {
+  type        = bool
+  description = "Allow exposing nginx-ingress metrics for prometheus-operator"
+  default     = false
+}
+
 variable "argo_cd" {
   type        = bool
   default     = false

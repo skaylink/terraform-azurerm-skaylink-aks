@@ -160,6 +160,7 @@ resource "helm_release" "nginx_ingress_controller" {
     name  = "controller.replicaCount"
     value = 2
   }
+
   set {
     name  = "controller.service.loadBalancerIP"
     value = azurerm_public_ip.nginx_ingress[0].ip_address
@@ -168,6 +169,14 @@ resource "helm_release" "nginx_ingress_controller" {
   set {
     name  = "controller.service.externalTrafficPolicy"
     value = "Local"
+  }
+
+  dynamic "set" {
+    for_each = local.metrics_enabled
+    content {
+      name  = set.value.name
+      value = set.value.value
+    }
   }
 }
 
