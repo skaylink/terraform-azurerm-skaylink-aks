@@ -171,12 +171,19 @@ resource "helm_release" "nginx_ingress_controller" {
     value = "Local"
   }
 
-  dynamic "set" {
-    for_each = local.metrics_enabled
-    content {
-      name  = set.value.name
-      value = set.value.value
-    }
+  set {
+    name  = "controller.metrics.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "controller.metrics.serviceMonitor.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "controller.metrics.serviceMonitor.additionalLabels.release"
+    value = "kube-prometheus-stack"
   }
 }
 
@@ -196,4 +203,20 @@ resource "helm_release" "argo_cd" {
   chart      = "argo-cd"
   version    = "4.5.0"
   namespace  = kubernetes_namespace.argo_cd_namespace[0].metadata[0].name
+
+  # Documentation on possible values can be found here: https://github.com/argoproj/argo-helm/blob/main/charts/argo-cd/README.md
+  set {
+    name  = "controller.metrics.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "controller.metrics.serviceMonitor.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "controller.metrics.serviceMonitor.additionalLabels.release"
+    value = "kube-prometheus-stack"
+  }
 }
