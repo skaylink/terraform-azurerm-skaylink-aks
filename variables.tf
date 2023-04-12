@@ -170,8 +170,8 @@ variable "argo_cd" {
 }
 
 variable "argo_cd_version" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "The version of the deployed Argo CD."
 }
 
