@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/terraform-azurerm-skaylink-aks/FileContentIndex
+/.vs/terraform-azurerm-skaylink-aks/v17
+/.vs
