@@ -169,6 +169,12 @@ variable "argo_cd" {
   description = "Set this value to true if you want to use Argo CD"
 }
 
+variable "argo_cd_version" {
+  type = string
+  default = null
+  description = "The version of the deployed Argo CD."
+}
+
 variable "ip_domain_name_label" {
   type        = string
   default     = null
