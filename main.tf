@@ -194,6 +194,6 @@ resource "helm_release" "argo_cd" {
   name       = "argocd"
   repository = "https://argoproj.github.io/argo-helm"
   chart      = "argo-cd"
-  version    = "4.5.0"
+  version    = var.argo_cd_version == null ? "4.5.0" : var.argo_cd_version
   namespace  = kubernetes_namespace.argo_cd_namespace[0].metadata[0].name
 }

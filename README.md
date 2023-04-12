@@ -69,6 +69,7 @@ No modules.
 | <a name="input_aks_subnet_id"></a> [aks\_subnet\_id](#input\_aks\_subnet\_id) | The subnet ID to use for the AKS cluster | `string` | n/a | yes |
 | <a name="input_aks_vnet_id"></a> [aks\_vnet\_id](#input\_aks\_vnet\_id) | Scope to provide Network Contributor access to the AKS cluster when deploying Ingress NGINX | `string` | `null` | no |
 | <a name="input_argo_cd"></a> [argo\_cd](#input\_argo\_cd) | Set this value to true if you want to use Argo CD | `bool` | `false` | no |
+| <a name="input_argo_cd_version"></a> [argo\_cd\_version](#input\_argo\_cd\_version) | The version of the deployed Argo CD. | `string` | `null` | no |
 | <a name="input_authorized_ip_ranges"></a> [authorized\_ip\_ranges](#input\_authorized\_ip\_ranges) | Authorized IP ranges for the AKS cluster if AKS cluster is not publicly accessible. | `list(string)` | `null` | no |
 | <a name="input_environment_name"></a> [environment\_name](#input\_environment\_name) | The name of the environment to deploy the AKS cluster in, commonly used names are dev, qa and prod. | `string` | n/a | yes |
 | <a name="input_ingress_controller"></a> [ingress\_controller](#input\_ingress\_controller) | Set this value to true if you want to use an ingress controller | `bool` | `false` | no |
